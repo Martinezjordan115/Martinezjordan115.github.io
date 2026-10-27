@@ -1,0 +1,313 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="Jordan Martinez — Frontend developer in Elgin, IL. React, Next.js, Supabase.">
+<title>Jordan Martinez</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap">
+<style>
+  /* Layout: single 1000px column on a neon grid; HUD-style clipped panels; two-up work grid on desktop */
+  :root {
+    --bg: #07060d;
+    --surface: #0d0b18;
+    --line: #231f3a;
+    --fg: #ecebff;
+    --muted: #9a97c0;
+    --dim: #5d5a85;
+    --cyan: #00f0ff;
+    --magenta: #ff2a6d;
+    --yellow: #f5ee30;
+    --font-display: "Chakra Petch", "Eurostile", "Bank Gothic", ui-sans-serif, system-ui, sans-serif;
+    --font-mono: "JetBrains Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+    --cut: 14px;
+    color-scheme: dark;
+  }
+  html { background: var(--bg); }
+  body {
+    background: var(--bg); color: var(--fg); font-family: var(--font-mono);
+    -webkit-font-smoothing: antialiased; font-size: 14px; line-height: 1.65;
+    background-image:
+      radial-gradient(60% 40% at 85% 0%, rgba(255, 42, 109, .14), transparent 70%),
+      radial-gradient(50% 40% at 0% 30%, rgba(0, 240, 255, .10), transparent 70%),
+      linear-gradient(rgba(0, 240, 255, .045) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0, 240, 255, .045) 1px, transparent 1px);
+    background-size: auto, auto, 44px 44px, 44px 44px;
+    background-attachment: fixed;
+  }
+  /* CRT scanlines over everything, never blocking clicks */
+  body::after {
+    content: ""; position: fixed; inset: 0; pointer-events: none; z-index: 70;
+    background: repeating-linear-gradient(to bottom, rgba(0,0,0,.18) 0 1px, transparent 1px 3px);
+    mix-blend-mode: multiply;
+  }
+  body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); z-index: 60; background: var(--bg); }
+  ::selection { background: var(--magenta); color: var(--bg); }
+
+  .gutter { padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+  .wrap { max-width: 1000px; margin: 0 auto; }
+  h1, h2, h3 { font-family: var(--font-display); text-wrap: balance; }
+  .label { font-size: 11px; letter-spacing: .14em; text-transform: uppercase; color: var(--dim); }
+  .cyan { color: var(--cyan); } .magenta { color: var(--magenta); } .yellow { color: var(--yellow); }
+  .glow-c { color: var(--cyan); text-shadow: 0 0 12px rgba(0,240,255,.65), 0 0 32px rgba(0,240,255,.35); }
+  a, button { transition: color .15s, background-color .15s, border-color .15s, box-shadow .15s, transform .15s; }
+  :focus-visible { outline: 2px solid var(--yellow); outline-offset: 3px; }
+
+  /* Section heading: // 01_WORK ─────── */
+  .sec-head { display: flex; align-items: center; gap: 14px; font-family: var(--font-display); font-weight: 600; font-size: 13px; letter-spacing: .2em; text-transform: uppercase; }
+  .sec-head::after { content: ""; flex: 1; height: 1px; background: linear-gradient(90deg, var(--cyan), transparent); opacity: .5; }
+
+  /* Clipped HUD panel with a gradient edge */
+  .panel { --c: var(--cut); position: relative; padding: 1px; min-width: 0;
+    background: linear-gradient(140deg, var(--cyan), var(--line) 35%, var(--line) 65%, var(--magenta));
+    clip-path: polygon(0 0, calc(100% - var(--c)) 0, 100% var(--c), 100% 100%, var(--c) 100%, 0 calc(100% - var(--c))); }
+  .panel > .in { background: var(--surface); height: 100%;
+    clip-path: polygon(0 0, calc(100% - var(--c)) 0, 100% var(--c), 100% 100%, var(--c) 100%, 0 calc(100% - var(--c))); }
+  .panel:hover { filter: drop-shadow(0 0 14px rgba(0,240,255,.25)); }
+
+  .shot { position: relative; aspect-ratio: 16 / 10; max-width: 100%; overflow: hidden; border: 1px solid var(--line); }
+  .shot img { width: 100%; height: 100%; display: block; }
+  .shot.contain { background: radial-gradient(circle at 50% 55%, #2a1630, #0d0b18 70%); display: grid; place-items: center; }
+  .shot.contain img { width: 44%; height: auto; object-fit: contain; filter: drop-shadow(0 0 18px rgba(255, 42, 109, .55)); }
+  .shot.cover img { object-fit: cover; object-position: top center; filter: saturate(.9) contrast(1.05); }
+  .shot::after { content: ""; position: absolute; inset: 0; pointer-events: none;
+    background: repeating-linear-gradient(to bottom, rgba(0,240,255,.05) 0 1px, transparent 1px 4px),
+                linear-gradient(to top, rgba(7,6,13,.55), transparent 40%); }
+  .shot .hud { position: absolute; left: 10px; bottom: 8px; z-index: 1; font-size: 10px; letter-spacing: .14em; color: var(--cyan); text-transform: uppercase; }
+  .corner { position: absolute; width: 14px; height: 14px; border-color: var(--cyan); z-index: 1; }
+  .corner.tl { top: 6px; left: 6px; border-top: 2px solid; border-left: 2px solid; }
+  .corner.br { bottom: 6px; right: 6px; border-bottom: 2px solid; border-right: 2px solid; }
+
+  .btn { display: inline-flex; align-items: center; gap: 8px; height: 38px; padding: 0 16px; font-size: 12px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; text-decoration: none; color: var(--cyan); border: 1px solid var(--cyan); background: transparent; cursor: pointer;
+    clip-path: polygon(0 0, calc(100% - 10px) 0, 100% 10px, 100% 100%, 10px 100%, 0 calc(100% - 10px)); }
+  .btn:hover { background: rgba(0,240,255,.12); box-shadow: inset 0 0 18px rgba(0,240,255,.35); }
+  .btn-hot { color: var(--bg); background: var(--magenta); border-color: var(--magenta); }
+  .btn-hot:hover { background: var(--yellow); border-color: var(--yellow); color: var(--bg); box-shadow: none; }
+  .tag { font-size: 11px; color: var(--muted); border: 1px solid var(--line); padding: 2px 8px; background: rgba(0,240,255,.03); }
+  .tag::before { content: "#"; color: var(--magenta); margin-right: 2px; }
+
+  .status { display: inline-flex; align-items: center; gap: 10px; padding: 6px 12px; border: 1px solid rgba(245,238,48,.4); color: var(--yellow); font-size: 11px; letter-spacing: .14em; text-transform: uppercase; background: rgba(245,238,48,.05); }
+  .pulse { width: 7px; height: 7px; background: var(--yellow); box-shadow: 0 0 10px var(--yellow); }
+
+  /* Glitch headline: two offset colour ghosts behind the real text */
+  .glitch { position: relative; }
+  .glitch::before, .glitch::after { content: attr(data-text); position: absolute; inset: 0; pointer-events: none; opacity: .7; }
+  .glitch::before { color: var(--magenta); transform: translate(-2px, 0); clip-path: inset(0 0 55% 0); mix-blend-mode: screen; }
+  .glitch::after  { color: var(--cyan);    transform: translate(2px, 0);  clip-path: inset(55% 0 0 0); mix-blend-mode: screen; }
+  .cursor { display: inline-block; width: .55em; height: 1em; background: var(--cyan); vertical-align: -0.12em; margin-left: 4px; box-shadow: 0 0 10px var(--cyan); }
+
+  .stack-row { display: grid; grid-template-columns: 34px 1fr auto; gap: 12px; align-items: baseline; padding: 9px 0; border-bottom: 1px dashed var(--line); }
+  .stack-row:hover { color: var(--cyan); }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .fade { animation: fade .7s ease-out both; }
+    @keyframes fade { from { opacity: .001; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+    .cursor { animation: blink 1.05s steps(1) infinite; }
+    @keyframes blink { 50% { opacity: 0; } }
+    .pulse { animation: blink 1.6s steps(1) infinite; }
+    .glitch::before { animation: g1 3.2s infinite steps(1); }
+    .glitch::after  { animation: g2 3.2s infinite steps(1); }
+    @keyframes g1 { 0%,86%,100% { transform: translate(-2px,0); clip-path: inset(0 0 55% 0); } 88% { transform: translate(-7px,-2px); clip-path: inset(12% 0 70% 0); } 91% { transform: translate(5px,1px); clip-path: inset(40% 0 35% 0); } 94% { transform: translate(-4px,0); clip-path: inset(70% 0 5% 0); } }
+    @keyframes g2 { 0%,86%,100% { transform: translate(2px,0); clip-path: inset(55% 0 0 0); } 89% { transform: translate(7px,2px); clip-path: inset(60% 0 20% 0); } 92% { transform: translate(-5px,-1px); clip-path: inset(20% 0 60% 0); } 95% { transform: translate(3px,0); clip-path: inset(5% 0 80% 0); } }
+  }
+</style>
+
+<style>*,*::before,*::after{box-sizing:border-box}body{margin:0}img{max-width:100%}</style>
+</head>
+<body>
+<div id="root"></div>
+
+<script src="https://cdn.tailwindcss.com/3.4.17"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.3.1/umd/react.production.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.3.1/umd/react-dom.production.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/htm@3.1.1/dist/htm.umd.js"></script>
+<script>
+const { useState } = React;
+const html = htm.bind(React.createElement);
+
+const EMAIL = "martinezjordan115@gmail.com";
+const GITHUB = "https://github.com/Martinezjordan115";
+
+const PROJECTS = [
+  {
+    id: "01",
+    name: "AVE.PEDIBEUTY",
+    kind: "Client work · Spa studio",
+    summary: "Live booking site for a spa studio in Durango. Clients book in three steps, confirm by WhatsApp, and earn rewards toward a free pedicure.",
+    tags: ["Next.js", "Supabase", "Tailwind", "Responsive"],
+    repo: `${GITHUB}/ave-pedibeuty`,
+    live: "https://ave-pedibeuty-7jom.vercel.app/",
+    host: "vercel",
+    image: { src: "ave.png", alt: "AVE.PEDIBEUTY hummingbird logo", fit: "contain" },
+  },
+  {
+    id: "02",
+    name: "Gambito",
+    kind: "Product prototype · Chess",
+    summary: "Chess platform where players negotiate a stake before each match. Full rules, practice bot with alpha-beta search, clocks, and a counter-offer flow.",
+    tags: ["JavaScript", "chess.js", "Minimax", "Game state"],
+    repo: `${GITHUB}/gambito`,
+    live: "https://martinezjordan115.github.io/gambito/",
+    host: "gh-pages",
+    image: { src: "gambito.png", alt: "Gambito chess board with clocks for both players", fit: "cover" },
+  },
+];
+
+const STACK = [
+  { group: "Frontend", items: ["React", "Next.js", "TypeScript", "JavaScript", "Tailwind CSS"] },
+  { group: "Backend / Tools", items: ["Node.js", "Supabase", "Firebase", "SQL", "Git / GitHub"] },
+];
+
+function CopyEmail() {
+  const [copied, setCopied] = useState(false);
+  const copy = async () => {
+    try { await navigator.clipboard.writeText(EMAIL); setCopied(true); setTimeout(() => setCopied(false), 1600); }
+    catch { const r = document.createRange(); r.selectNodeContents(document.getElementById("email-text")); const s = getSelection(); s.removeAllRanges(); s.addRange(r); }
+  };
+  return html`
+    <div class="flex flex-wrap items-center gap-4">
+      <span id="email-text" class="select-all break-all text-base"><span class="magenta">$</span> ${EMAIL}</span>
+      <button id="copy-email" onClick=${copy} class="btn">${copied ? "Copied ✓" : "Copy email"}</button>
+    </div>`;
+}
+
+function Header() {
+  return html`
+    <header class="gutter sticky z-50 border-b" style=${{ top: "env(safe-area-inset-top, 0px)", borderColor: "var(--line)", background: "rgba(7,6,13,.78)", backdropFilter: "blur(10px)", WebkitBackdropFilter: "blur(10px)" }}>
+      <div class="wrap flex h-14 items-center justify-between">
+        <span class="flex items-center gap-2 text-sm font-bold tracking-widest" style=${{ fontFamily: "var(--font-display)" }}>
+          <span class="glow-c">JM</span><span class="magenta">//</span><span>MARTINEZ</span>
+        </span>
+        <nav class="flex items-center gap-6 text-xs uppercase tracking-widest" style=${{ color: "var(--muted)" }}>
+          <a href=${GITHUB} target="_blank" rel="noopener" class="hover:text-[#00f0ff]">GitHub</a>
+          <a href="#contact" class="hover:text-[#00f0ff]">Email</a>
+        </nav>
+      </div>
+    </header>`;
+}
+
+function Hero() {
+  const title = "Frontend developer building products that convert.";
+  const stats = [["02", "projects live"], ["IL", "Elgin, Illinois"], ["ON", "available now"]];
+  return html`
+    <section class="gutter fade">
+      <div class="wrap pt-16 pb-20 sm:pt-24 sm:pb-24">
+        <div class="mb-8 flex flex-wrap items-center gap-4">
+          <span class="status"><span class="pulse"></span> Available for freelance · Open to full-time</span>
+        </div>
+        <p class="mb-4 text-sm" style=${{ color: "var(--muted)" }}><span class="magenta">jordan@elgin</span>:<span class="cyan">~</span>$ whoami</p>
+        <h1 class="glitch max-w-4xl text-4xl font-bold uppercase sm:text-6xl" data-text=${title} style=${{ lineHeight: 1.02, letterSpacing: "-0.01em" }}>
+          ${title}
+        </h1>
+        <p class="mt-7 max-w-xl text-sm sm:text-base" style=${{ color: "var(--muted)" }}>
+          I'm Jordan, based in Elgin. I turn ideas from local businesses into fast, easy-to-use web products. Focused on <span class="cyan">React</span> and <span class="cyan">Next.js</span>.<span class="cursor"></span>
+        </p>
+        <dl class="mt-12 grid max-w-xl grid-cols-3 gap-3">
+          ${stats.map(([k, v]) => html`
+            <div key=${v} class="panel" style=${{ "--c": "10px" }}>
+              <div class="in px-4 py-3">
+                <dt class="glow-c text-2xl font-bold" style=${{ fontFamily: "var(--font-display)" }}>${k}</dt>
+                <dd class="label mt-1" style=${{ color: "var(--muted)" }}>${v}</dd>
+              </div>
+            </div>`)}
+        </dl>
+      </div>
+    </section>`;
+}
+
+function ProjectCard({ p }) {
+  return html`
+    <article class="panel">
+      <div class="in flex flex-col gap-6 p-5 sm:p-6">
+        <div class=${"shot " + p.image.fit}>
+          <span class="corner tl"></span><span class="corner br"></span>
+          <img src=${p.image.src} alt=${p.image.alt} loading="lazy" />
+          <span class="hud">● deployed · ${p.host}</span>
+        </div>
+        <div class="flex flex-col gap-3">
+          <div class="flex items-baseline justify-between gap-4">
+            <span class="magenta text-xs font-bold">[${p.id}]</span>
+            <span class="label">${p.kind}</span>
+          </div>
+          <h3 class="text-2xl font-bold uppercase tracking-wide">${p.name}</h3>
+          <p class="text-sm" style=${{ color: "var(--muted)", maxWidth: "52ch" }}>${p.summary}</p>
+          <div class="flex flex-wrap gap-2 pt-1">${p.tags.map((t) => html`<span key=${t} class="tag">${t}</span>`)}</div>
+        </div>
+        <div class="mt-auto flex flex-wrap gap-3 pt-2">
+          <a class="btn" href=${p.repo} target="_blank" rel="noopener">GitHub</a>
+          ${p.live
+            ? html`<a class="btn btn-hot" href=${p.live} target="_blank" rel="noopener">Live demo ↗</a>`
+            : html`<span class="btn" aria-disabled="true">Live soon</span>`}
+        </div>
+      </div>
+    </article>`;
+}
+
+function Work() {
+  return html`
+    <section class="gutter">
+      <div class="wrap py-16">
+        <div class="mb-10 flex items-center gap-4">
+          <h2 class="sec-head flex-1"><span class="magenta">//</span> Selected work</h2>
+          <span class="label">${String(PROJECTS.length).padStart(2, "0")} entries</span>
+        </div>
+        <div class="grid grid-cols-1 gap-6 md:grid-cols-2">
+          ${PROJECTS.map((p) => html`<${ProjectCard} key=${p.id} p=${p} />`)}
+        </div>
+      </div>
+    </section>`;
+}
+
+function Stack() {
+  return html`
+    <section class="gutter">
+      <div class="wrap py-16">
+        <h2 class="sec-head mb-10"><span class="magenta">//</span> Stack</h2>
+        <div class="grid grid-cols-1 gap-10 sm:grid-cols-2">
+          ${STACK.map((s, gi) => html`
+            <div key=${s.group}>
+              <p class="label mb-3"><span class="yellow">▸</span> ${s.group}</p>
+              <ul>
+                ${s.items.map((item, i) => html`
+                  <li key=${item} class="stack-row">
+                    <span class="text-xs" style=${{ color: "var(--dim)" }}>0x${(gi * 5 + i).toString(16).padStart(2, "0")}</span>
+                    <span>${item}</span>
+                    <span class="text-xs cyan">OK</span>
+                  </li>`)}
+              </ul>
+            </div>`)}
+        </div>
+      </div>
+    </section>`;
+}
+
+function Footer() {
+  return html`
+    <footer id="contact" class="gutter">
+      <div class="wrap flex flex-col gap-8 pt-16 pb-12">
+        <div class="panel">
+          <div class="in flex flex-col gap-6 p-6 sm:p-10">
+            <p class="label"><span class="magenta">//</span> Open channel</p>
+            <h2 class="text-3xl font-bold uppercase sm:text-5xl" style=${{ lineHeight: 1.05 }}>
+              Let's build <span class="glow-c">something.</span>
+            </h2>
+            <${CopyEmail} />
+          </div>
+        </div>
+        <div class="flex flex-wrap justify-between gap-4 text-xs" style=${{ color: "var(--dim)" }}>
+          <span>© 2026 Jordan Martinez · Elgin, IL</span>
+          <a href=${GITHUB} target="_blank" rel="noopener" class="hover:text-[#00f0ff]">github.com/Martinezjordan115</a>
+        </div>
+      </div>
+    </footer>`;
+}
+
+function App() {
+  return html`<${React.Fragment}><${Header} /><main><${Hero} /><${Work} /><${Stack} /></main><${Footer} /></${React.Fragment}>`;
+}
+
+ReactDOM.createRoot(document.getElementById("root")).render(html`<${App} />`);
+</script>
+</body>
+</html>
