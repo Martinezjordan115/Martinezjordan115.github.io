@@ -136,7 +136,6 @@ const PROJECTS = [
     kind: "Client work · Spa studio",
     summary: "Live booking site for a spa studio in Durango. Clients book in three steps, confirm by WhatsApp, and earn rewards toward a free pedicure.",
     tags: ["Next.js", "Supabase", "Tailwind", "Responsive"],
-    repo: `${GITHUB}/ave-pedibeuty`,
     live: "https://ave-pedibeuty-7jom.vercel.app/",
     host: "vercel",
     image: { src: "ave.png", alt: "AVE.PEDIBEUTY hummingbird logo", fit: "contain" },
@@ -151,6 +150,17 @@ const PROJECTS = [
     live: "https://martinezjordan115.github.io/gambito/",
     host: "gh-pages",
     image: { src: "gambito.png", alt: "Gambito chess board with clocks for both players", fit: "cover" },
+  },
+  {
+    id: "03",
+    name: "Menú Digital",
+    kind: "Product · Restaurants",
+    summary: "Bilingual digital menu for restaurants. Customers build their order from their phone and send it straight to the restaurant's WhatsApp, with no app and no per-order fees.",
+    tags: ["JavaScript", "Bilingual", "WhatsApp", "Mobile-first"],
+    repo: `${GITHUB}/menu-digital-whatsapp`,
+    live: "https://martinezjordan115.github.io/menu-digital-whatsapp/",
+    host: "gh-pages",
+    image: { src: "menu.png", alt: "Digital menu for a Mexican restaurant on a phone screen", fit: "cover" },
   },
 ];
 
@@ -189,7 +199,7 @@ function Header() {
 
 function Hero() {
   const title = "Frontend developer building products that convert.";
-  const stats = [["02", "projects live"], ["IL", "Elgin, Illinois"], ["ON", "available now"]];
+  const stats = [["03", "projects live"], ["IL", "Elgin, Illinois"], ["ON", "available now"]];
   return html`
     <section class="gutter fade">
       <div class="wrap pt-16 pb-20 sm:pt-24 sm:pb-24">
@@ -235,7 +245,7 @@ function ProjectCard({ p }) {
           <div class="flex flex-wrap gap-2 pt-1">${p.tags.map((t) => html`<span key=${t} class="tag">${t}</span>`)}</div>
         </div>
         <div class="mt-auto flex flex-wrap gap-3 pt-2">
-          <a class="btn" href=${p.repo} target="_blank" rel="noopener">GitHub</a>
+          ${p.repo && html`<a class="btn" href=${p.repo} target="_blank" rel="noopener">GitHub</a>`}
           ${p.live
             ? html`<a class="btn btn-hot" href=${p.live} target="_blank" rel="noopener">Live demo ↗</a>`
             : html`<span class="btn" aria-disabled="true">Live soon</span>`}
